@@ -1,26 +1,142 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#f4df42">
+    android:layout_margin="20dp"
+    android:background="#ffffff"
+    android:orientation="vertical">
+
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <Button
+            android:id="@+id/closeButton"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/ic_close_black_24dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </android.support.constraint.ConstraintLayout>
 
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/minorValue"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_margin="30dp"
-        android:textSize="22dp"
-        android:text="This is a popup window."
-        android:id="@+id/textView" />
+        android:layout_weight="1"
+        android:text="Minor value: " />
 
-    <Button
-        android:id="@+id/deleteMarker"
-        android:layout_width="wrap_content"
+    <EditText
+        android:id="@+id/editMinor"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="Remove marker"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_weight="1"
+        android:ems="10"
+        android:enabled="false"
+        android:inputType="textPersonName" />
 
-</RelativeLayout>
+    <TextView
+        android:id="@+id/heightValue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Height: " />
+
+    <EditText
+        android:id="@+id/editHeight"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:ems="10"
+        android:enabled="false"
+        android:inputType="textPersonName" />
+
+    <TextView
+        android:id="@+id/surfaceType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Surface: " />
+
+    <EditText
+        android:id="@+id/editSurface"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:ems="10"
+        android:enabled="false"
+        android:inputType="textPersonName" />
+
+    <TextView
+        android:id="@+id/floorValue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Floor: " />
+
+    <EditText
+        android:id="@+id/editFloor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:ems="10"
+        android:enabled="false"
+        android:inputType="textPersonName" />
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/editButton"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/classpic" />
+
+        <Button
+            android:id="@+id/deleteMarker"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/ic_delete_black_24dp"
+            android:gravity="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent" />
+
+        <Button
+            android:id="@+id/editButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:background="@drawable/ic_edit_black_24dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+
+    </android.support.constraint.ConstraintLayout>
+
+</LinearLayout>

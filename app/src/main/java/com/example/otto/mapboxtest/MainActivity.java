@@ -1,15 +1,22 @@
 package com.example.otto.mapboxtest;
 
+import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.ListPopupWindow;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 
@@ -39,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements SteerpathMapFragm
     Button removeMarker;
     private Button disableMarkerAdd;
     boolean addableMarkers = true;
+    boolean editOn = false;
     boolean popupWindowActive = false;
     private String apiKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzY29wZXMiOiJiYXNlOnI7anVoYW5pdGVzdF9zdGF0aWM6cjtqdWhhbml0ZXN0X2R5bmFtaWM6ciIsImp0aSI6ImUyZjY1Mjc0LTY4YTgtNGM0ZS04MGY5LTUzNThkOTBiNTRkNSIsInN1YiI6Imp1aGFuaXRlc3QifQ.gAOJ1h7q43p65H3pXMYsZ2EGYCoCGUTcNhB5aX1s8j4";
 
@@ -162,22 +170,30 @@ public class MainActivity extends AppCompatActivity implements SteerpathMapFragm
         LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
         View popupView = inflater.inflate(R.layout.popup_window, null);
 
-        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
-        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-        boolean focusable = true;
-        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+        int width = LinearLayout.LayoutParams.MATCH_PARENT;
+        int height = LinearLayout.LayoutParams.MATCH_PARENT;
+
+        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, true);
 
         popupWindow.showAtLocation(mainLayout, Gravity.CENTER, 0, 0);
 
         popupView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                popupWindow.dismiss();
+                //popupWindow.dismiss();
                 return true;
             }
         });
 
         final Button removeMarker = (Button)popupView.findViewById(R.id.deleteMarker);
+        final Button closeBtn = (Button)popupView.findViewById(R.id.closeButton);
+        final Button editBtn = (Button)popupView.findViewById(R.id.editButton);
+        final EditText editMinor = (EditText)popupView.findViewById(R.id.editMinor);
+        final EditText editHeight = (EditText)popupView.findViewById(R.id.editHeight);
+        final EditText editSurface = (EditText)popupView.findViewById(R.id.editSurface);
+        final EditText editFloor = (EditText)popupView.findViewById(R.id.editFloor);
+
+
 
         removeMarker.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -187,6 +203,35 @@ public class MainActivity extends AppCompatActivity implements SteerpathMapFragm
             }
         });
 
+        closeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+            }
+        });
+
+        editBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!editOn) {
+                    editBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_done_black_24dp));
+                    editMinor.setEnabled(true);
+                    editHeight.setEnabled(true);
+                    editSurface.setEnabled(true);
+                    editFloor.setEnabled(true);
+                    editOn = true;
+                }
+                else{
+                    editBtn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_edit_black_24dp));
+                    editMinor.setEnabled(false);
+                    editHeight.setEnabled(false);
+                    editSurface.setEnabled(false);
+                    editFloor.setEnabled(false);
+                    editOn = false;
+                }
+            }
+        });
     }
+
 }
 
