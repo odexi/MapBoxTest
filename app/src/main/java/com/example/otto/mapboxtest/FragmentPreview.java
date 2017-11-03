@@ -104,7 +104,7 @@ public class FragmentPreview extends Fragment implements View.OnTouchListener, V
     @Override
     public void onClick(View v) {
         if (drawn) {
-            Bitmap bibb = BitmapFactory.decodeFile(mFile + "/pic.jpg");
+            Bitmap bibb = BitmapFactory.decodeFile(mFile);
             canvas = sfhTrackHolder.lockCanvas();
             bibb = resize(bibb, bibb.getWidth(), bibb.getHeight());
             Bitmap bitmap = Bitmap.createBitmap( bibb.getWidth(), bibb.getHeight(), Bitmap.Config.ARGB_8888);
