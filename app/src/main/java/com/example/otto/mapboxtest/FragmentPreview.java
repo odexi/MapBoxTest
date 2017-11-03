@@ -41,6 +41,7 @@ public class FragmentPreview extends Fragment implements View.OnTouchListener, V
     private float circleCoordy;
     private float x, y;
     private Paint paint = new Paint();
+    private String mFile;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -58,7 +59,7 @@ public class FragmentPreview extends Fragment implements View.OnTouchListener, V
         iv = (ImageView)v.findViewById(R.id.latestPicture);
         iv.setOnTouchListener(this);
         //TODO: maybe change string on following line
-        String mFile = getActivity().getExternalFilesDir(null)+ "/pic.jpg";
+        mFile = getActivity().getExternalFilesDir(null)+ "/pic.jpg";
         iv.setImageBitmap(BitmapFactory.decodeFile(mFile));
 
         paint.setStyle(Paint.Style.STROKE);
@@ -103,7 +104,7 @@ public class FragmentPreview extends Fragment implements View.OnTouchListener, V
     @Override
     public void onClick(View v) {
         if (drawn) {
-            Bitmap bibb = BitmapFactory.decodeFile("/storage/emulated/0/Android/data/com.example.mikko.cameraexample/files/pic.jpg");
+            Bitmap bibb = BitmapFactory.decodeFile(mFile + "/pic.jpg");
             canvas = sfhTrackHolder.lockCanvas();
             bibb = resize(bibb, bibb.getWidth(), bibb.getHeight());
             Bitmap bitmap = Bitmap.createBitmap( bibb.getWidth(), bibb.getHeight(), Bitmap.Config.ARGB_8888);
