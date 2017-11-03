@@ -1,6 +1,7 @@
 package com.example.otto.mapboxtest;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Parcel;
@@ -21,6 +22,7 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 
@@ -42,7 +44,7 @@ import com.steerpath.sdk.maps.SteerpathMapView;
 import static android.view.View.VISIBLE;
 
 
-public class MainActivity extends AppCompatActivity implements SteerpathMapFragment.MapViewListener{
+public class MainActivity extends AppCompatActivity implements SteerpathMapFragment.MapViewListener, View.OnClickListener {
 
     private SteerpathMap map;
     private Marker marker;
@@ -50,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements SteerpathMapFragm
     Button removeMarker;
     private Button disableMarkerAdd;
     private Button markerMove;
+    private Button picView;
     boolean addableMarkers = true;
     boolean editOn = false;
     boolean markerDraggable = false;
@@ -66,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements SteerpathMapFragm
 
         disableMarkerAdd = (Button)findViewById(R.id.disableMarkerAdd);
         markerMove = (Button)findViewById(R.id.markerMove);
+
 
         SteerpathClient.StartConfig config =  new SteerpathClient.StartConfig.Builder()
                 // MANDATORY:
@@ -265,8 +269,17 @@ public class MainActivity extends AppCompatActivity implements SteerpathMapFragm
         final EditText editHeight = (EditText)popupView.findViewById(R.id.editHeight);
         final EditText editSurface = (EditText)popupView.findViewById(R.id.editSurface);
         final EditText editFloor = (EditText)popupView.findViewById(R.id.editFloor);
+        final ImageView picView = (ImageView)popupView.findViewById(R.id.imageView);
 
 
+
+        picView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), ActivityCamera.class);
+                startActivity(intent);
+            }
+        });
 
         removeMarker.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -307,7 +320,11 @@ public class MainActivity extends AppCompatActivity implements SteerpathMapFragm
     }
 
 
+    @Override
+    public void onClick(View v) {
 
+
+    }
 }
 
 
