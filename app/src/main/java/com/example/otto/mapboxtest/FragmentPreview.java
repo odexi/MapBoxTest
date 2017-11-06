@@ -60,7 +60,9 @@ public class FragmentPreview extends Fragment implements View.OnTouchListener, V
         iv.setOnTouchListener(this);
         //TODO: maybe change string on following line
         mFile = getActivity().getExternalFilesDir(null)+ "/pic.jpg";
-        iv.setImageBitmap(BitmapFactory.decodeFile(mFile));
+        Bitmap bit = BitmapFactory.decodeFile(mFile);
+        //Bitmap resized = Bitmap.createScaledBitmap(bit,  , true);
+        iv.setImageBitmap(bit);
 
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(7);
