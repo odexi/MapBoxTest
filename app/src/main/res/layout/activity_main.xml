@@ -9,15 +9,21 @@
 
     <Button
         android:id="@+id/disableMarkerAdd"
-        android:layout_width="100dp"
-        android:layout_height="60dp"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
         android:text="Disable marker add"
         android:textSize="12sp" />
 
     <Button
         android:id="@+id/markerMove"
-        android:layout_width="140dp"
-        android:layout_height="60dp"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
         android:text="Enable marker moving"
         android:textSize="12sp" />
+
+    <Button
+        android:id="@+id/printBeaconsBtn"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="Print beacons" />
 </LinearLayout>
