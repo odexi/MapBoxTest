@@ -109,7 +109,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/classpic" />
+            app:srcCompat="@drawable/ic_local_bar_black_24dp" />
 
         <Button
             android:id="@+id/deleteMarker"
