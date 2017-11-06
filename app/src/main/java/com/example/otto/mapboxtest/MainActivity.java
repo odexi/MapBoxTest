@@ -67,7 +67,6 @@ public class MainActivity extends AppCompatActivity implements SteerpathMapFragm
     private Marker markerToMove;
     protected Beacon beacon;
     private Beacon beaconToEdit;
-    boolean popupWindowActive = false;
     Map<LatLng, Integer> beaconPositions;
     ArrayList<Beacon> beacons;
     private String apiKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzY29wZXMiOiJiYXNlOnI7anVoYW5pdGVzdF9zdGF0aWM6cjtqdWhhbml0ZXN0X2R5bmFtaWM6ciIsImp0aSI6ImUyZjY1Mjc0LTY4YTgtNGM0ZS04MGY5LTUzNThkOTBiNTRkNSIsInN1YiI6Imp1aGFuaXRlc3QifQ.gAOJ1h7q43p65H3pXMYsZ2EGYCoCGUTcNhB5aX1s8j4";
