@@ -53,7 +53,6 @@ public class MainActivity extends AppCompatActivity implements SteerpathMapFragm
     private SteerpathMap map;
     private Marker marker;
     private Marker markerToRemove;
-    Button removeMarker;
     private Button disableMarkerAdd;
     private Button markerMove;
     private Button printBeacons;
@@ -68,7 +67,6 @@ public class MainActivity extends AppCompatActivity implements SteerpathMapFragm
     private Marker markerToMove;
     protected Beacon beacon;
     private Beacon beaconToEdit;
-    private LatLng clickedMarker;
     boolean popupWindowActive = false;
     Map<LatLng, Integer> beaconPositions;
     ArrayList<Beacon> beacons;
