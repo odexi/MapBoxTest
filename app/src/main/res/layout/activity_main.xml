@@ -26,4 +26,12 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:text="Print beacons" />
+
+    <Button
+        android:id="@+id/scanBeaconsBtn"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:textSize="12sp"
+        android:text="Scan for beacons" />
+
 </LinearLayout>

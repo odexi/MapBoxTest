@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements SteerpathMapFragm
     private Button disableMarkerAdd;
     private Button markerMove;
     private Button printBeacons;
+    private Button scanBeacons;
     private int id = 0;
     private int removedBeaconId;
     private Button picView;
@@ -91,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements SteerpathMapFragm
         disableMarkerAdd = (Button)findViewById(R.id.disableMarkerAdd);
         markerMove = (Button)findViewById(R.id.markerMove);
         printBeacons = (Button)findViewById(R.id.printBeaconsBtn);
+        scanBeacons = (Button)findViewById(R.id.scanBeaconsBtn);
         beaconPositions = new HashMap<LatLng, Integer>();
         beacons = new ArrayList<>();
 
@@ -286,6 +288,16 @@ public class MainActivity extends AppCompatActivity implements SteerpathMapFragm
                                 Log.d("Beaconin location: ", String.valueOf(beacons.get(i).getPosition()));
 
                         }
+                    }
+                });
+
+                scanBeacons.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.d("Click!","Stop touching me!");
+                        FragmentScanner fs = new FragmentScanner();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_parent,fs).addToBackStack(null)
+                                .commit();
                     }
                 });
 
