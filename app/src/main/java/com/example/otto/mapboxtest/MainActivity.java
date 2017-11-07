@@ -2,6 +2,7 @@ package com.example.otto.mapboxtest;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Parcel;
@@ -27,6 +28,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.mapbox.mapboxsdk.annotations.IconFactory;
 import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.BaseMarkerOptions;
@@ -44,14 +50,16 @@ import com.steerpath.sdk.maps.SteerpathMapView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static android.view.View.VISIBLE;
 
 
 public class MainActivity extends AppCompatActivity implements SteerpathMapFragment.MapViewListener, View.OnClickListener {
-
-
+    private List data = new ArrayList();
+    private DatabaseReference mDatabase;
     private SteerpathMap map;
     private Marker marker;
     private Marker markerToRemove;
@@ -69,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements SteerpathMapFragm
     private Marker markerToMove;
     protected Beacon beacon;
     private Beacon beaconToEdit;
+    private ArrayList array;
     Map<LatLng, Integer> beaconPositions;
     ArrayList<Beacon> beacons;
     private String apiKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzY29wZXMiOiJiYXNlOnI7anVoYW5pdGVzdF9zdGF0aWM6cjtqdWhhbml0ZXN0X2R5bmFtaWM6ciIsImp0aSI6ImUyZjY1Mjc0LTY4YTgtNGM0ZS04MGY5LTUzNThkOTBiNTRkNSIsInN1YiI6Imp1aGFuaXRlc3QifQ.gAOJ1h7q43p65H3pXMYsZ2EGYCoCGUTcNhB5aX1s8j4";
@@ -98,10 +107,55 @@ public class MainActivity extends AppCompatActivity implements SteerpathMapFragm
             }
         });
 
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("beacons");
+
+        // Read from the database
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                array = (ArrayList) dataSnapshot.getValue();
+                Log.i("array: " , String.valueOf(array.size()));
+            }
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w("error", "Failed to read value.", error.toException());
+            }
+        });
+
+
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_parent, SteerpathMapFragment.newInstance(), "steerpath-map-fragment").commit();
         }
+        initiateBeacons();
     }
+
+
+    final BaseMarkerOptions baseMarkerOptions = new BaseMarkerOptions() {
+        @Override
+        public BaseMarkerOptions getThis() {
+            return this;
+        }
+
+        @Override
+        public Marker getMarker() {
+            return marker;
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+
+        }
+    };
 
     @Override
     public void onMapViewReady(final SteerpathMapView mapView) {
@@ -120,28 +174,6 @@ public class MainActivity extends AppCompatActivity implements SteerpathMapFragm
 
                 map.setCameraPosition(position);
 
-                final BaseMarkerOptions baseMarkerOptions = new BaseMarkerOptions() {
-                    @Override
-                    public BaseMarkerOptions getThis() {
-                        return this;
-                    }
-
-                    @Override
-                    public Marker getMarker() {
-                        return marker;
-                    }
-
-                    @Override
-                    public int describeContents() {
-                        return 0;
-                    }
-
-                    @Override
-                    public void writeToParcel(Parcel dest, int flags) {
-
-                    }
-                };
-
                 mapView.setOnMapClickListener(new MapboxMap.OnMapClickListener() {
                     @Override
                     public void onMapClick(@NonNull LatLng point) {
@@ -158,7 +190,6 @@ public class MainActivity extends AppCompatActivity implements SteerpathMapFragm
                                 Log.d("Beacon objekti: ", String.valueOf(beacons.get(i).getId()));
                                 Log.d("Beacon objekti: ", beacons.get(i).getPosition().toString());
                             }
-
 
                             //Log.d(point.toString(), String.valueOf(id));
                         }
@@ -249,6 +280,7 @@ public class MainActivity extends AppCompatActivity implements SteerpathMapFragm
                 printBeacons.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        initiateBeacons();
                         for(int i=0; i<beacons.size(); i++){
                                 Log.d("Beaconin id: ", String.valueOf(beacons.get(i).getId()));
                                 Log.d("Beaconin location: ", String.valueOf(beacons.get(i).getPosition()));
@@ -259,7 +291,9 @@ public class MainActivity extends AppCompatActivity implements SteerpathMapFragm
 
             }
         });
+
     }
+
 
     private void editBeacon(LatLng point) {
 
@@ -285,6 +319,7 @@ public class MainActivity extends AppCompatActivity implements SteerpathMapFragm
             beacon = new Beacon(id, 0, point, 0, 0);
             beacons.add(id, beacon);
             id = id + 1;
+            writeNewBeacon(beacon, id);
         }
         else{
             beacon = new Beacon(removedBeaconId, 0, point, 0, 0);
@@ -427,12 +462,31 @@ public class MainActivity extends AppCompatActivity implements SteerpathMapFragm
         });
     }
 
+    private void writeNewBeacon(Beacon beacon, int Id) {
+        mDatabase.child("beacons").child(String.valueOf(Id)).setValue(beacon);
+    }
+
+
+    private void initiateBeacons() {
+        if (array != null) {
+            for (int i = 1; i < array.size(); i++) {
+                HashMap hash = (HashMap) array.get(i);
+                HashMap<String, Object> hash2 = (HashMap<String, Object>) hash.get("position");
+                Log.i("position? ", String.valueOf(hash2.get("latitude")));
+                LatLng pos = new LatLng((Double) hash2.get("latitude"), (Double) hash2.get("longitude"));
+                drawMarker(pos, baseMarkerOptions);
+            }
+        }
+    }
+
 
     @Override
     public void onClick(View v) {
 
 
     }
+
+
 }
 
 
