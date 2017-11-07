@@ -42,6 +42,10 @@ import com.steerpath.sdk.maps.SteerpathMap;
 import com.steerpath.sdk.maps.SteerpathMapFragment;
 import com.steerpath.sdk.maps.SteerpathMapView;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 import static android.view.View.VISIBLE;
 
 
@@ -51,16 +55,22 @@ public class MainActivity extends AppCompatActivity implements SteerpathMapFragm
     private SteerpathMap map;
     private Marker marker;
     private Marker markerToRemove;
-    Button removeMarker;
     private Button disableMarkerAdd;
     private Button markerMove;
+    private Button printBeacons;
+    private int id = 0;
+    private int removedBeaconId;
     private Button picView;
     boolean addableMarkers = true;
     boolean editOn = false;
     boolean markerDraggable = false;
     boolean firstClick = false;
+    boolean useRemovedId = false;
     private Marker markerToMove;
-    boolean popupWindowActive = false;
+    protected Beacon beacon;
+    private Beacon beaconToEdit;
+    Map<LatLng, Integer> beaconPositions;
+    ArrayList<Beacon> beacons;
     private String apiKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzY29wZXMiOiJiYXNlOnI7anVoYW5pdGVzdF9zdGF0aWM6cjtqdWhhbml0ZXN0X2R5bmFtaWM6ciIsImp0aSI6ImUyZjY1Mjc0LTY4YTgtNGM0ZS04MGY5LTUzNThkOTBiNTRkNSIsInN1YiI6Imp1aGFuaXRlc3QifQ.gAOJ1h7q43p65H3pXMYsZ2EGYCoCGUTcNhB5aX1s8j4";
 
     @Override
@@ -71,6 +81,9 @@ public class MainActivity extends AppCompatActivity implements SteerpathMapFragm
 
         disableMarkerAdd = (Button)findViewById(R.id.disableMarkerAdd);
         markerMove = (Button)findViewById(R.id.markerMove);
+        printBeacons = (Button)findViewById(R.id.printBeaconsBtn);
+        beaconPositions = new HashMap<LatLng, Integer>();
+        beacons = new ArrayList<>();
 
 
         SteerpathClient.StartConfig config =  new SteerpathClient.StartConfig.Builder()
@@ -135,12 +148,32 @@ public class MainActivity extends AppCompatActivity implements SteerpathMapFragm
 
 
                         if(addableMarkers && !markerDraggable){
+
                             drawMarker(point, baseMarkerOptions);
+                           // beaconPositions.put(point, id);
+
+                            createBeacon(point);
+
+                            for(int i=0; i<beacons.size(); i=i+1){
+                                Log.d("Beacon objekti: ", String.valueOf(beacons.get(i).getId()));
+                                Log.d("Beacon objekti: ", beacons.get(i).getPosition().toString());
+                            }
+
+
+                            //Log.d(point.toString(), String.valueOf(id));
                         }
 
                         else if(firstClick){
-                            drawMarker(point, baseMarkerOptions);
+                           // drawMarker(point, baseMarkerOptions);
+                           // movedBeacon = true;
+                            //createBeacon(point);
+                            //beaconPositions.put(point, id);
+                           // Log.d(point.toString(), String.valueOf(id));
                             markerToMove.remove();
+                            //beaconPositions.remove(markerToMove.getPosition());
+                            beaconToEdit.setPosition(point);
+                            drawMarker(beaconToEdit.getPosition(), baseMarkerOptions);
+                            //createBeacon(beaconToEdit.getPosition());
                             addableMarkers = false;
                             firstClick = false;
                         }
@@ -149,6 +182,13 @@ public class MainActivity extends AppCompatActivity implements SteerpathMapFragm
                      @Override
                      public boolean onMarkerClick(@NonNull Marker marker) {
 
+                         Log.d("Marker: ", marker.getPosition().toString());
+                         for(int i=0; i<beacons.size(); i++){
+                             if(marker.getPosition().equals(beacons.get(i).getPosition())) {
+                                 Log.d("Beaconin id: ", String.valueOf(beacons.get(i).getId()));
+                             }
+                         }
+
                          if(!markerDraggable){
                              markerToRemove = marker;
                              showPopupWindow(markerToRemove);
@@ -156,7 +196,14 @@ public class MainActivity extends AppCompatActivity implements SteerpathMapFragm
                          else if(markerDraggable){
                              firstClick = true;
                              addableMarkers = true;
+                             for(int i=0; i<beacons.size(); i++){
+                                 if(marker.getPosition().equals(beacons.get(i).getPosition())) {
+                                     Log.d("Beaconin id: ", String.valueOf(beacons.get(i).getId()));
+                                 }
+                             }
                              markerToMove = marker;
+
+                             editBeacon(markerToMove.getPosition());
                              markerToMove.setIcon(IconFactory.getInstance(getApplicationContext()).fromResource(R.drawable.ic_local_bar_black_24dp));
                          }
 
@@ -169,7 +216,7 @@ public class MainActivity extends AppCompatActivity implements SteerpathMapFragm
 
                     }
                 });
-                
+
                 disableMarkerAdd.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -199,8 +246,64 @@ public class MainActivity extends AppCompatActivity implements SteerpathMapFragm
                     }
                 });
 
+                printBeacons.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        for(int i=0; i<beacons.size(); i++){
+                                Log.d("Beaconin id: ", String.valueOf(beacons.get(i).getId()));
+                                Log.d("Beaconin location: ", String.valueOf(beacons.get(i).getPosition()));
+
+                        }
+                    }
+                });
+
             }
         });
+    }
+
+    private void editBeacon(LatLng point) {
+
+        for(int i=0; i<beacons.size(); i++){
+            if(point.equals(beacons.get(i).getPosition())) {
+                beaconToEdit = beacons.get(i);
+                int editBeaconId = beacons.get(i).getId();
+                beaconToEdit.setPosition(point);
+                if(!useRemovedId) {
+                    beaconToEdit.setId(editBeaconId);
+                }
+                else{
+                    beaconToEdit.setId(removedBeaconId);
+                    useRemovedId = false;
+                }
+            }
+        }
+
+    }
+
+    private void createBeacon(LatLng point){
+        if(!useRemovedId) {
+            beacon = new Beacon(id, 0, point, 0, 0);
+            beacons.add(id, beacon);
+            id = id + 1;
+        }
+        else{
+            beacon = new Beacon(removedBeaconId, 0, point, 0, 0);
+            beacons.add(removedBeaconId, beacon);
+            useRemovedId = false;
+        }
+    }
+
+
+    private void removeBeacon(LatLng point){
+        for(int i=0; i<beacons.size(); i++){
+            if(point.equals(beacons.get(i).getPosition())) {
+                beaconToEdit = beacons.get(i);
+                removedBeaconId = beaconToEdit.getId();
+                beacons.remove(beaconToEdit);
+                useRemovedId = true;
+
+            }
+        }
     }
 
     private void drawMarker(LatLng point, BaseMarkerOptions baseMarkerOptions){
@@ -214,6 +317,7 @@ public class MainActivity extends AppCompatActivity implements SteerpathMapFragm
             SteerpathAnnotationOptions steerpathAnnotationOptions = builder.userId("1").floor(0).withBaseMarkerOptions(baseMarkerOptions).build();
 
             map.addAnnotation(steerpathAnnotationOptions);
+
         }
     }
 
@@ -287,6 +391,8 @@ public class MainActivity extends AppCompatActivity implements SteerpathMapFragm
             @Override
             public void onClick(View v) {
                 markerToRemove.remove();
+                //beaconPositions.remove(markerToRemove.getPosition());
+                removeBeacon(markerToRemove.getPosition());
                 popupWindow.dismiss();
             }
         });
